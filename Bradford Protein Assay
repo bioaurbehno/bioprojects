@@ -1,0 +1,33 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+def BradfordEstimation(B0,B1,B2,B3,B4,B5,B6,AbsofSample,AbsBuffer):
+
+    Stds = [0,156, 312, 624, 1250, 2500, 5000]
+    StdAbs = [B0,B1,B2,B3,B4,B5,B6]
+    CorrectedStd= [B0-B0,B1-B0,B2-B0,B3-B0,B4-B0,B5-B0,B6-B0]
+    Sample = np.array(AbsofSample)
+    CorrectedSample = [Sample-AbsBuffer]
+
+    print('Corrected Standards: ',CorrectedStd)
+    print('Corrected Sample: ',CorrectedSample)
+
+    #Plot, Regression, Slope, Intercept, Concentrations, 
+    plt.scatter(Stds,CorrectedStd)
+    #x = int(Stds)
+    x = np.array(Stds)
+    y = np.array(CorrectedStd)
+    m,b = np.polyfit (x, y, 1)
+    plt.plot(x, m*x + b)
+    print('Equation: ',m,'*x+',b, 'Slope:',m, 'Intercept:', b)
+
+    #R^2
+    corr_matrix = np.corrcoef(x, y)
+    corr = corr_matrix[0,1]
+    R_sq = corr**2
+    print('R squared is:', R_sq)
+
+    #ProteinConcentration 
+    f = np.array(CorrectedSample)
+    Final_Conc = ((f-b)/m)
+    print('The protein concentration in your sample is :', Final_Conc, 'in ng/ul')
